@@ -46,3 +46,4 @@ captures/
 .gradle/
 
 .DS_Store
+build_copy.sh
