@@ -15,6 +15,6 @@
         android:id="@+id/view_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="100dp"/>
+        android:padding="50dp"/>
 
 </merge>

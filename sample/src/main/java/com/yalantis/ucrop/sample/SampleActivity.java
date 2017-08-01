@@ -60,7 +60,9 @@ public class SampleActivity extends BaseActivity {
             if (requestCode == REQUEST_SELECT_PICTURE) {
                 final Uri selectedUri = data.getData();
                 if (selectedUri != null) {
-                    startCropActivity(data.getData());
+                    if (!formFigure)
+                        startCropActivity(data.getData());
+                    else CropActivity.start(this, data.getData().toString());
                 } else {
                     Toast.makeText(SampleActivity.this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
                 }
@@ -89,11 +91,14 @@ public class SampleActivity extends BaseActivity {
         }
     }
 
+    private boolean formFigure = false;
+
     @SuppressWarnings("ConstantConditions")
     private void setupUI() {
         findViewById(R.id.button_crop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                formFigure = false;
                 pickFromGallery();
             }
         });
@@ -106,6 +111,14 @@ public class SampleActivity extends BaseActivity {
                 startCropActivity(Uri.parse(String.format(Locale.getDefault(), "https://unsplash.it/%d/%d/?random",
                         minSizePixels + random.nextInt(maxSizePixels - minSizePixels),
                         minSizePixels + random.nextInt(maxSizePixels - minSizePixels))));
+            }
+        });
+
+        findViewById(R.id.button_mask_preview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                formFigure = true;
+                pickFromGallery();
             }
         });
 

@@ -26,6 +26,7 @@
 
     <string name="button_pick_amp_crop"><![CDATA[Pick & Crop]]></string>
     <string name="button_crop_random_image">Crop random image</string>
+    <string name="button_crop_mask_preview">Crop mask preview</string>
 
     <string name="description_cropped_image">Cropped image</string>
 
