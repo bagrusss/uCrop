@@ -13,7 +13,6 @@ import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.UCropView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +22,17 @@ public class CropActivity extends AppCompatActivity {
 
     private UCropView cropView;
 
-    private static final String PATH = "/sdcard/Pictures/temp/1.jpg";
     private List<OverlayView.PreviewForm> forms = new ArrayList<>(6);
     private int current = 0;
+
+    {
+        forms.add(OverlayView.PreviewForm.CIRCLE);
+        forms.add(OverlayView.PreviewForm.SQUARE);
+        forms.add(OverlayView.PreviewForm.HEXAGON);
+        forms.add(OverlayView.PreviewForm.ROUNDED_SQUARE);
+        forms.add(OverlayView.PreviewForm.SQUIRCLE_ROMB);
+        forms.add(OverlayView.PreviewForm.SQUIRCLE_SQUARE);
+    }
 
 
     @Override
@@ -33,14 +40,8 @@ public class CropActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop);
         cropView = (UCropView) findViewById(R.id.crop_view);
-        initCrop();
 
-        forms.add(OverlayView.PreviewForm.CIRCLE);
-        forms.add(OverlayView.PreviewForm.SQUARE);
-        forms.add(OverlayView.PreviewForm.HEXAGON);
-        forms.add(OverlayView.PreviewForm.ROUNDED_SQUARE);
-        forms.add(OverlayView.PreviewForm.SQUIRCLE_ROMB);
-        forms.add(OverlayView.PreviewForm.SQUIRCLE_SQUARE);
+        initCrop();
 
         findViewById(R.id.next_form).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,11 +57,13 @@ public class CropActivity extends AppCompatActivity {
         int res = Math.round(70 * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
 
         OverlayView overlayView = cropView.getOverlayView();
-        overlayView.setPadding(res, res, res, res);
         overlayView.setShowCropGrid(false);
         overlayView.setDimmedColor(Color.parseColor("#CCFAFAFA"));
         overlayView.setShowCropFrame(false);
-        overlayView.setPreviewForm(OverlayView.PreviewForm.ROUNDED_SQUARE);
+        current = 0;
+        overlayView.setPreviewForm(forms.get(current));
+        overlayView.setPadding(res, res, res, res);
+
 
         CropImageView cropImageView = cropView.getCropImageView();
         String path = getIntent().getStringExtra(KEY_PATH);

@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -82,6 +83,8 @@ public class OverlayView extends View {
     private PreviewForm form = PreviewForm.SQUARE;
     private Bitmap resizedMaskBitmap;
     private int resMask;
+    private final Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint defaultPaint = new Paint();
 
     public enum PreviewForm {
         SQUARE,
@@ -96,11 +99,16 @@ public class OverlayView extends View {
         mTouchPointThreshold = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_corner_touch_threshold);
         mCropRectMinSize = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_min_size);
         mCropRectCornerTouchAreaLineLength = getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_rect_corner_touch_area_line_length);
+
+        maskPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
     }
 
     public void setPreviewForm(PreviewForm form) {
+        if (this.form.equals(form))
+            return;
+
         this.form = form;
-        setShowCropGrid(false);
+
         if (resizedMaskBitmap != null) {
             resizedMaskBitmap.recycle();
             resizedMaskBitmap = null;
@@ -121,6 +129,11 @@ public class OverlayView extends View {
             default:
                 resMask = 0;
         }
+
+        int formHeight = (int) mCropViewRect.height();
+        if (formHeight > 0 && resMask > 0)
+            resizedMaskBitmap = getDecodedMask(mThisWidth, formHeight, resMask);
+
         invalidate();
     }
 
@@ -437,6 +450,10 @@ public class OverlayView extends View {
                 changeWidth ? mTempRect.right : mCropViewRect.right,
                 changeHeight ? mTempRect.bottom : mCropViewRect.bottom);
 
+        int formHeight = (int) mCropViewRect.height();
+        if (formHeight > 0 && resizedMaskBitmap == null)
+            resizedMaskBitmap = getDecodedMask(mThisWidth, formHeight, resMask);
+
         if (changeHeight || changeWidth) {
             updateGridPoints();
             postInvalidate();
@@ -487,12 +504,15 @@ public class OverlayView extends View {
         return closestPointIndex;
     }
 
+    private long time;
+
     /**
      * This method draws dimmed area around the crop bounds.
      *
      * @param canvas - valid canvas object
      */
     protected void drawDimmedLayer(@NonNull Canvas canvas) {
+        time = System.currentTimeMillis();
         canvas.save();
         if (mCircleDimmedLayer) {
             canvas.clipPath(mCircularPath, Region.Op.DIFFERENCE);
@@ -507,8 +527,6 @@ public class OverlayView extends View {
                     canvas.drawColor(mDimmedColor);
                     break;
                 default:
-                    if (resizedMaskBitmap == null)
-                        resizedMaskBitmap = getDecodedMask(mThisWidth, mThisWidth, resMask);
                     drawMaskHardWare(canvas);
             }
         }
@@ -518,7 +536,10 @@ public class OverlayView extends View {
             canvas.drawCircle(mCropViewRect.centerX(), mCropViewRect.centerY(),
                     Math.min(mCropViewRect.width(), mCropViewRect.height()) / 2.f, mDimmedStrokePaint);
         }
+        time = System.currentTimeMillis() - time;
+        Log.d("Overlay", "draw time=" + time);
     }
+
 
     private Bitmap getDecodedMask(int width, int height, @DrawableRes int maskId) {
         Bitmap decodeResource = getBitmapFromVectorDrawable(getContext(), maskId);
@@ -542,33 +563,24 @@ public class OverlayView extends View {
     }
 
     private void drawMaskHardWare(Canvas canvas) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         if (isHardwareAccelerated())
             setLayerType(LAYER_TYPE_HARDWARE, null);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         canvas.drawColor(mDimmedColor);
 
-        canvas.drawBitmap(resizedMaskBitmap, getPivotX() - mThisWidth / 2, getPivotY() - mThisWidth / 2, paint);
-        paint.setXfermode(null);
+        canvas.drawBitmap(resizedMaskBitmap, getPivotX() - mCropViewRect.width() / 2, getPivotY() - mCropViewRect.height() / 2, maskPaint);
     }
 
     private void drawMask(Canvas canvas) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         if (isHardwareAccelerated())
             setLayerType(LAYER_TYPE_HARDWARE, null);
 
         Bitmap res = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas temp = new Canvas(res);
         temp.drawColor(mDimmedColor);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        temp.drawBitmap(resizedMaskBitmap, getPivotX() - mThisWidth / 2, getPivotY() - mThisWidth / 2, paint);
+        temp.drawBitmap(resizedMaskBitmap, getPivotX() - mThisWidth / 2, getPivotY() - mCropViewRect.height() / 2, maskPaint);
 
-        //setLayerType(LAYER_TYPE_HARDWARE, paint);
-        //canvas.drawColor(mDimmedColor);
-
-        canvas.drawBitmap(res, 0, 0, new Paint());
+        canvas.drawBitmap(res, 0, 0, defaultPaint);
         res.recycle();
-        paint.setXfermode(null);
     }
 
 
