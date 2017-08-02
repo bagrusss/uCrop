@@ -1,5 +1,6 @@
 package com.yalantis.ucrop.sample;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -76,9 +77,10 @@ public class CropActivity extends AppCompatActivity {
         }
     }
 
-    public static void start(Context context, String path) {
-        Intent intent = new Intent(context, CropActivity.class);
+    public static void start(Activity activity, String path) {
+        Intent intent = new Intent(activity, CropActivity.class);
         intent.putExtra(KEY_PATH, path);
-        context.startActivity(intent);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
     }
 }
