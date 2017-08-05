@@ -39,7 +39,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".CropActivity"
+            android:name=".MaskActivity"
             android:screenOrientation="portrait"/>
 
     </application>

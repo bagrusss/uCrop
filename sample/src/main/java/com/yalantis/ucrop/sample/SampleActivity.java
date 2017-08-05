@@ -62,7 +62,7 @@ public class SampleActivity extends BaseActivity {
                 if (selectedUri != null) {
                     if (!formFigure)
                         startCropActivity(data.getData());
-                    else CropActivity.start(this, data.getData().toString());
+                    else MaskActivity.start(this, data.getData().toString());
                 } else {
                     Toast.makeText(SampleActivity.this, R.string.toast_cannot_retrieve_selected_image, Toast.LENGTH_SHORT).show();
                 }

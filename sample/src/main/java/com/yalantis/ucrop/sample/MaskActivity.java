@@ -1,7 +1,6 @@
 package com.yalantis.ucrop.sample;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -17,7 +16,7 @@ import com.yalantis.ucrop.view.UCropView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CropActivity extends AppCompatActivity {
+public class MaskActivity extends AppCompatActivity {
 
     private static final String KEY_PATH = "PATH";
 
@@ -30,9 +29,9 @@ public class CropActivity extends AppCompatActivity {
         forms.add(OverlayView.PreviewForm.CIRCLE);
         forms.add(OverlayView.PreviewForm.SQUARE);
         forms.add(OverlayView.PreviewForm.HEXAGON);
-        forms.add(OverlayView.PreviewForm.ROUNDED_SQUARE);
+        forms.add(OverlayView.PreviewForm.ROUND_SQUARE);
         forms.add(OverlayView.PreviewForm.SQUIRCLE_ROMB);
-        forms.add(OverlayView.PreviewForm.SQUIRCLE_SQUARE);
+        forms.add(OverlayView.PreviewForm.SQUIRCLE);
     }
 
 
@@ -78,9 +77,9 @@ public class CropActivity extends AppCompatActivity {
     }
 
     public static void start(Activity activity, String path) {
-        Intent intent = new Intent(activity, CropActivity.class);
+        Intent intent = new Intent(activity, MaskActivity.class);
         intent.putExtra(KEY_PATH, path);
         activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+        activity.overridePendingTransition(R.anim.show_up, R.anim.show_down);
     }
 }

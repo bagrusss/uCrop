@@ -91,9 +91,9 @@ public class OverlayView extends View {
         SQUARE,
         CIRCLE,
         HEXAGON,
-        ROUNDED_SQUARE,
+        ROUND_SQUARE,
         SQUIRCLE_ROMB,
-        SQUIRCLE_SQUARE
+        SQUIRCLE
     }
 
     {
@@ -116,16 +116,16 @@ public class OverlayView extends View {
         }
         switch (form) {
             case HEXAGON:
-                resMask = R.drawable.hexagon_transparent;
+                resMask = R.drawable.hexagon;
                 break;
             case SQUIRCLE_ROMB:
-                resMask = R.drawable.squircle_romb_transparent;
+                resMask = R.drawable.squircle_romb;
                 break;
-            case ROUNDED_SQUARE:
-                resMask = R.drawable.round_square_transparent;
+            case ROUND_SQUARE:
+                resMask = R.drawable.round_square;
                 break;
-            case SQUIRCLE_SQUARE:
-                resMask = R.drawable.squircle_transparent;
+            case SQUIRCLE:
+                resMask = R.drawable.squircle;
                 break;
             default:
                 resMask = 0;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yalantis.ucrop.sample.CropActivity">
+    tools:context="com.yalantis.ucrop.sample.MaskActivity">
 
     <com.yalantis.ucrop.view.UCropView
         android:id="@+id/crop_view"
