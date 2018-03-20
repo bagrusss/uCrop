@@ -32,6 +32,14 @@ android {
 
 dependencies {
     compile project(':ucrop')
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+}
+repositories {
+    google()
+}
+buildscript {
+    repositories {
+        google()
+    }
 }
