@@ -87,6 +87,8 @@ public class OverlayView extends View {
     private final Paint defaultPaint = new Paint();
     private int layerType;
 
+    private boolean useMask = false;
+
     public enum PreviewForm {
         SQUARE,
         CIRCLE,
@@ -109,6 +111,7 @@ public class OverlayView extends View {
             return;
 
         this.form = form;
+        useMask = true;
 
         if (resizedMaskBitmap != null) {
             resizedMaskBitmap.recycle();
@@ -139,6 +142,7 @@ public class OverlayView extends View {
     }
 
     public void disableMaskForm() {
+        useMask = false;
         setPreviewForm(PreviewForm.SQUARE);
         setLayerType(layerType, null);
     }
@@ -462,7 +466,7 @@ public class OverlayView extends View {
                 changeHeight ? mTempRect.bottom : mCropViewRect.bottom);
 
         int formHeight = (int) mCropViewRect.height();
-        if (formHeight > 0 && resizedMaskBitmap == null)
+        if (useMask && formHeight > 0 && resizedMaskBitmap == null)
             resizedMaskBitmap = getDecodedMask(mThisWidth, formHeight, resMask);
 
         if (changeHeight || changeWidth) {
